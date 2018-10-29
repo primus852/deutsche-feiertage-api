@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiController extends AbstractController
 {
     /**
-     * @Route("/api/{search_year}", name="api", defaults={"search_year"="0"}, methods={"GET"})
+     * @Route("/api/{search_year}", name="api", defaults={"search_year"="0"}, methods={"POST"})
      * @param Request $request
      * @param string $search_year
      * @return \Symfony\Component\HttpFoundation\JsonResponse
