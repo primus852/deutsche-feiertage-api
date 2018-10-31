@@ -8,11 +8,13 @@
         "friendsofsymfony/rest-bundle": "^2.4",
         "nelmio/cors-bundle": "^1.5",
         "primus852/symfony-short-response": "dev-master",
+        "symfony/asset": "*",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
         "symfony/serializer-pack": "^1.0",
+        "symfony/twig-bundle": "*",
         "symfony/yaml": "*"
     },
     "require-dev": {
