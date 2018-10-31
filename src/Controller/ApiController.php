@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiController extends AbstractController
 {
     /**
-     * @Route("/api/{search_year}", name="api", defaults={"search_year"="0"}, methods={"POST"})
+     * @Route("/api/jahr/{search_year}", name="api", defaults={"search_year"="0"}, methods={"POST"})
      * @param Request $request
      * @param string $search_year
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -28,22 +28,22 @@ class ApiController extends AbstractController
         /**
          * Init the Api
          */
-        try{
+        try {
             $api = new Api($this->getDoctrine()->getManager(), $request);
-        }catch (ApiException $e){
-            return ShortResponse::exception('Initialization failed, '.$e->getMessage().'');
+        } catch (ApiException $e) {
+            return ShortResponse::exception('Initialization failed, ' . $e->getMessage() . '');
         }
 
 
         /**
          * Do the Request
          */
-        try{
+        try {
             $data = $api->by_year($year);
-        }catch (ApiException $e){
-            return ShortResponse::exception('Query failed, please try again shortly ('.$e->getMessage().')');
+        } catch (ApiException $e) {
+            return ShortResponse::exception('Query failed, please try again shortly (' . $e->getMessage() . ')');
         }
 
-        return ShortResponse::success('Data loaded',$data);
+        return ShortResponse::success('Data loaded', $data);
     }
 }
