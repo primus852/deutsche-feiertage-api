@@ -6,6 +6,7 @@ use App\Utils\Api;
 use App\Utils\ApiException;
 use primus852\ShortResponse\ShortResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -44,6 +45,6 @@ class ApiController extends AbstractController
             return ShortResponse::exception('Query failed, please try again shortly (' . $e->getMessage() . ')');
         }
 
-        return ShortResponse::success('Data loaded', $data);
+        return new JsonResponse($data);
     }
 }
