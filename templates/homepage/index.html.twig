@@ -5,51 +5,173 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <!-- Post Content Column -->
-            <div class="col-lg-8">
-
-                <!-- Title -->
-                <h1 class="mt-4">Post Title</h1>
-
-                <!-- Author -->
+            <div class="col-lg-12">
+                <h1 class="mt-4">Alle deutschen Feiertage abrufbar als API</h1>
+                <hr>
+                <img class="img-fluid rounded" src="{{ asset('assets/img/banner.jpg') }}" alt="DFA">
+                <hr>
                 <p class="lead">
-                    by
-                    <a href="#">Start Bootstrap</a>
+                    Auf der Suche nach einer verlässlichen API bin ich auf nicht viel gestoßen und habe mir deswegen selbst etwas gebastelt.
                 </p>
-
-                <hr>
-
-                <!-- Date/Time -->
-                <p>Posted on January 1, 2018 at 12:00 PM</p>
-
-                <hr>
-
-                <!-- Preview Image -->
-                <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
-
-                <hr>
-
-                <!-- Post Content -->
-                <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, vero, obcaecati, aut, error quam sapiente nemo saepe quibusdam sit excepturi nam quia corporis eligendi eos magni recusandae laborum minus inventore?</p>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, tenetur natus doloremque laborum quos iste ipsum rerum obcaecati impedit odit illo dolorum ab tempora nihil dicta earum fugiat. Temporibus, voluptatibus.</p>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, doloribus, dolorem iusto blanditiis unde eius illum consequuntur neque dicta incidunt ullam ea hic porro optio ratione repellat perspiciatis. Enim, iure!</p>
-
+                <p>
+                    Entstanden ist daraus ein kleines Open-Source-Projekt und ein passender Blog-Eintrag:
+                </p>
                 <blockquote class="blockquote">
-                    <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                    <footer class="blockquote-footer">Someone famous in
-                        <cite title="Source Title">Source Title</cite>
+                    <p class="mb-0">Projekt auf GitHub</p>
+                    <footer class="blockquote-footer"><a href="https://github.com/primus852/deutsche-feiertage-api">https://github.com/primus852/deutsche-feiertage-api/</a>
                     </footer>
                 </blockquote>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, nostrum, aliquid, animi, ut quas placeat totam sunt tempora commodi nihil ullam alias modi dicta saepe minima ab quo voluptatem obcaecati?</p>
+                <blockquote class="blockquote">
+                    <p class="mb-0">Blog via codeprimus.de</p>
+                    <footer class="blockquote-footer"><a href="https://www.codeprimus.de/a-rest-api-w-symfony4-from-scratch/">https://www.codeprimus.de/a-rest-api-w-symfony4-from-scratch/</a>
+                    </footer>
+                </blockquote>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, dolor quis. Sunt, ut, explicabo, aliquam tenetur ratione tempore quidem voluptates cupiditate voluptas illo saepe quaerat numquam recusandae? Qui, necessitatibus, est!</p>
+                <p>
+                    Die Nutzung ist kostenfrei und sehr einfach zu verwenden. Aktuell gibt es kein RateLimit, mal schauen was der Server hier aushält.
+                </p>
+
+                <p>Fragen gerne per Mail an tow.berlin@gmail.com </p>
 
                 <hr>
 
-                <!-- Comments Form -->
+                <h3>Dokumentation</h3>
+                Diese kleine Doku soll euch bei der Nutzung des Service helfen
+                <br />
+                <hr />
+                <h4>Allgemein</h4>
+                <ul>
+                    <li>Request Url: <code>https://deutsche-feiertage-api.de/api/v1/[DATUM/JAHR]</code></li>
+                    <li>Der Service ist via POST-Requests abrufbar</li>
+                    <li>Der Header eines Requests muss <code>X-DFA-Token: dfa</code> enthalten</li>
+                    <li>
+                        Beispielaufruf via cURL:<br/>
+                        <code>curl -H "X-DFA-Token: dfa" -X POST https://deutsche-feiertage-api.de/api/v1/2018-10-03</code><br/>
+                        Ergebnis
+                        <pre>
+                            <code>
+{
+  "result": "success",
+  "message": "2018-10-03 is a general holiday",
+  "holiday": {
+    "date": "2018-10-03",
+    "name": "Tag der Deutschen Einheit",
+    "regions": {
+      "bw": true,
+      "bay": true,
+      "be": true,
+      "bb": true,
+      "hb": true,
+      "hh": true,
+      "he": true,
+      "mv": true,
+      "ni": true,
+      "nw": true,
+      "rp": true,
+      "sl": true,
+      "sn": true,
+      "st": true,
+      "sh": true,
+      "th": true
+    },
+    "all_states": true
+  }
+}
+                            </code>
+                        </pre>
+                    </li>
+                </ul>
+                <hr />
+                <h4>Parameter</h4>
+                <table class="table table-sm table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Parameter</th>
+                        <th scope="col">Default</th>
+                        <th scope="col">Erlaubt</th>
+                        <th scope="col">Beschreibung</th>
+                        <th scope="col">Beispiel</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">DATUM/JAHR</th>
+                        <td></td>
+                        <td>Ganzes Jahr (z.B. 2018) oder Datum im Format Y-m-d (z.B. 2018-10-03)</td>
+                        <td>Wird mit der URL übergeben</td>
+                        <td>
+                            <code>/api/v1/2018</code><br />
+                            <code>/api/v1/2018-10-31</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">bundesweit</th>
+                        <td>false</td>
+                        <td>'true', '1', 'false', '0'</td>
+                        <td>Zeigt nur Feiertage an, die Bundesweit gelten</td>
+                        <td>
+                            <code>/api/v1/2018-10-03?bundesweit=true</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">bundeslaender</th>
+                        <td>null</td>
+                        <td>'bw',
+                            'bay',
+                            'be',
+                            'bb',
+                            'hb',
+                            'hh',
+                            'he',
+                            'mv',
+                            'ni',
+                            'nw',
+                            'rp',
+                            'sl',
+                            'sn',
+                            'st',
+                            'sh',
+                            'th',
+                        </td>
+                        <td>Schränkt die Anzeige der Bundesländer ein</td>
+                        <td>
+                            <code>/api/v1/2018-10-31?bundeslaender=be,bb</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">short</th>
+                        <td>false</td>
+                        <td>'true', '1', 'false', '0'</td>
+                        <td>Gibt nur 'true' oder 'false' für einen spezifizierten Tag an. Kann mit 'bundeslaender' (max. 1) kombiniert werden</td>
+                        <td>
+                            <code>/api/v1/2018-10-31?short=true&bundeslaender=bb</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">info</th>
+                        <td>false</td>
+                        <td>'true', '1', 'false', '0'</td>
+                        <td>Liefert noch zusätzliche Infos</td>
+                        <td>
+                            <code>/api/v1/2018-10-31?info=true</code><br />
+                            <code>/api/v1/2018?info=true</code>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br />
+                <hr />
+                <h4>Self-Hosted</h4>
+                Gerne könnt ihr das Projekt auch auf euren eigenen Servern hosten<br />
+                Dazu einfach:
+                <ol>
+                    <li>Projekt clonen: <code>git clone https://github.com/primus852/deutsche-feiertage-api</code></li>
+                    <li>In den Projektordner wechseln und Abhängigkeiten installieren: <code>cd deutsche-feiertage-api && composer install</code></li>
+                    <li>Fertig</li>
+                </ol>
+
+                <!-- Comments Form
                 <div class="card my-4">
                     <h5 class="card-header">Leave a Comment:</h5>
                     <div class="card-body">
@@ -62,7 +184,7 @@
                     </div>
                 </div>
 
-                <!-- Single Comment -->
+
                 <div class="media mb-4">
                     <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                     <div class="media-body">
@@ -71,7 +193,7 @@
                     </div>
                 </div>
 
-                <!-- Comment with nested comments -->
+
                 <div class="media mb-4">
                     <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                     <div class="media-body">
@@ -96,72 +218,8 @@
 
                     </div>
                 </div>
-
+                -->
             </div>
-
-            <!-- Sidebar Widgets Column -->
-            <div class="col-md-4">
-
-                <!-- Search Widget -->
-                <div class="card my-4">
-                    <h5 class="card-header">Search</h5>
-                    <div class="card-body">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for...">
-                            <span class="input-group-btn">
-                  <button class="btn btn-secondary" type="button">Go!</button>
-                </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Categories Widget -->
-                <div class="card my-4">
-                    <h5 class="card-header">Categories</h5>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <ul class="list-unstyled mb-0">
-                                    <li>
-                                        <a href="#">Web Design</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">HTML</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Freebies</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-lg-6">
-                                <ul class="list-unstyled mb-0">
-                                    <li>
-                                        <a href="#">JavaScript</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">CSS</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Tutorials</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Side Widget -->
-                <div class="card my-4">
-                    <h5 class="card-header">Side Widget</h5>
-                    <div class="card-body">
-                        You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
-                    </div>
-                </div>
-
-            </div>
-
         </div>
-        <!-- /.row -->
-
     </div>
 {% endblock %}

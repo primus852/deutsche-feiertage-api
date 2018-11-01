@@ -33,7 +33,7 @@ class ApiException extends \Exception
             $result[] = substr($trace[$i], strpos($trace[$i], ' '));
         }
 
-        return 'Caller:'.$result[0].', Line '.$this->line.': '.$this->getMessage();
+        return $this->getMessage();
     }
 
 

@@ -13,18 +13,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiController extends AbstractController
 {
     /**
-     * @Route("/api/jahr/{search_year}", name="api", defaults={"search_year"="0"}, methods={"POST"})
+     * @Route("/api/v1/{date}", name="apiV1", defaults={"date"="0"}, methods={"POST"})
      * @param Request $request
-     * @param string $search_year
+     * @param string $date
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function index(Request $request, string $search_year)
+    public function index(Request $request, string $date)
     {
-
-        /**
-         * Get the year we are looking for
-         */
-        $year = $search_year === "0" ? (new \DateTime())->format('Y') : $search_year;
 
         /**
          * Init the Api
@@ -35,16 +30,26 @@ class ApiController extends AbstractController
             return ShortResponse::exception('Initialization failed, ' . $e->getMessage() . '');
         }
 
+        /**
+         * Get the endpoint by the sent date
+         */
+        $endpoint = $api->parse_date($date);
+        if (!$endpoint) {
+            return ShortResponse::error('Invalid Date');
+        }
 
         /**
          * Do the Request
          */
         try {
-            $data = $api->by_year($year);
-        } catch (ApiException $e) {
-            return ShortResponse::exception('Query failed, please try again shortly (' . $e->getMessage() . ')');
+            $data = $api->$endpoint($date);
+        } catch (\Exception $e) {
+            return ShortResponse::exception('Query failed, please try again', $e->getMessage());
         }
 
+        /**
+         * Return as JSON
+         */
         return new JsonResponse($data);
     }
 }
