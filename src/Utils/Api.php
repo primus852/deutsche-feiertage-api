@@ -163,7 +163,7 @@ class Api
          */
         if ($this->defaults['short'] === true) {
             $isHoliday = $holiday === null ? false : true;
-            $isGeneral = $this->defaults['bundesweit'];
+            $isGeneral = $holiday->getBundesweit();
 
             if ($holiday === null) {
                 return array(
@@ -186,6 +186,7 @@ class Api
                 reset($this->defaults['bundeslaender']);
                 return array(
                     'isHoliday' => $accessor->getValue($holiday, key($this->defaults['bundeslaender'])),
+                    'isGeneral' => $isGeneral,
                 );
             }
         }
