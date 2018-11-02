@@ -256,7 +256,7 @@ class Api
         /**
          * Show if we have something
          */
-        $result = $holiday === null ? 'error' : 'success';
+        $result = $holiday === null ? false : true;
         $message = $holiday === null ? $d . ' is not a' . $general . ' holiday' : $d . ' is a' . $general . ' holiday' . $addBl;
 
         /**
@@ -315,7 +315,7 @@ class Api
         /**
          * Show if we have something
          */
-        $result = empty($holidays) ? 'error' : 'success';
+        $result = empty($holidays) ? false : true;
         $message = empty($holidays) ? 'Could not find any holidays' : 'Holidays for ' . $year;
 
         /**
