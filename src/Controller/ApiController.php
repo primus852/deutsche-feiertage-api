@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Kernel;
 use App\Utils\Alexa;
 use App\Utils\AlexaException;
 use App\Utils\Api;
@@ -12,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ApiController extends AbstractController
