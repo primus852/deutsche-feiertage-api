@@ -17,6 +17,7 @@ class ApiController extends AbstractController
 {
 
     /**
+     * @Route("/alexa/v1", name="alexaV1", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
