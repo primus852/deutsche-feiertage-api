@@ -44,7 +44,7 @@ class ApiController extends AbstractController
         /**
          * Create the tmp folder
          */
-        $tmp_dir = $kernel->getProjectDir() . '/tmp';
+        $tmp_dir = $kernel->getProjectDir() . '/var/tmp';
         if (!$fs->exists($tmp_dir)) {
             $fs->mkdir($tmp_dir);
             $fs->chown($tmp_dir, 'www-data', true);
