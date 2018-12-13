@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ApiController extends AbstractController
@@ -20,10 +20,10 @@ class ApiController extends AbstractController
     /**
      * @Route("/alexa/v1", name="alexaV1", methods={"POST"})
      * @param Request $request
-     * @param Kernel $kernel
+     * @param KernelInterface $kernel
      * @return JsonResponse
      */
-    public function alexa(Request $request, Kernel $kernel)
+    public function alexa(Request $request, KernelInterface $kernel)
     {
 
         /**
