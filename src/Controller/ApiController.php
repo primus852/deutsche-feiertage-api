@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Kernel;
 use App\Utils\Alexa;
 use App\Utils\AlexaException;
 use App\Utils\Api;
@@ -19,9 +20,10 @@ class ApiController extends AbstractController
     /**
      * @Route("/alexa/v1", name="alexaV1", methods={"POST"})
      * @param Request $request
+     * @param Kernel $kernel
      * @return JsonResponse
      */
-    public function alexa(Request $request)
+    public function alexa(Request $request, Kernel $kernel)
     {
 
         /**
@@ -50,7 +52,7 @@ class ApiController extends AbstractController
         /**
          * Save the file
          */
-        $fs->dumpFile($this->get('kernel')->getRootDir() . '/tmp/req_' . $now->format('Y-m-d-H-i-s') . '.log', $alexa_request_body);
+        $fs->dumpFile($kernel->getRootDir() . '/tmp/req_' . $now->format('Y-m-d-H-i-s') . '.log', $alexa_request_body);
 
         /**
          * Create a new Alexa Class
