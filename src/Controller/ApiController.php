@@ -44,15 +44,16 @@ class ApiController extends AbstractController
         /**
          * Create the tmp folder
          */
-        if (!$fs->exists($this->get('kernel')->getRootDir() . '/tmp')) {
-            $fs->mkdir($this->get('kernel')->getRootDir() . '/tmp');
-            $fs->chown($this->get('kernel')->getRootDir() . '/tmp', 'www-data', true);
+        $tmp_dir = $kernel->getProjectDir() . '/tmp';
+        if (!$fs->exists($tmp_dir)) {
+            $fs->mkdir($tmp_dir);
+            $fs->chown($tmp_dir, 'www-data', true);
         }
 
         /**
          * Save the file
          */
-        $fs->dumpFile($kernel->getRootDir() . '/tmp/req_' . $now->format('Y-m-d-H-i-s') . '.log', $alexa_request_body);
+        $fs->dumpFile($tmp_dir . '/req_' . $now->format('Y-m-d-H-i-s') . '.log', $alexa_request_body);
 
         /**
          * Create a new Alexa Class
