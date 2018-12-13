@@ -20,15 +20,16 @@ class Api
      * Api constructor.
      * @param ObjectManager $em
      * @param Request $request
+     * @param bool $isAlexa
      * @throws ApiException
      */
-    public function __construct(ObjectManager $em, Request $request)
+    public function __construct(ObjectManager $em, Request $request, bool $isAlexa = false)
     {
-        if ($request->headers->get('X-DFA-Token') === null) {
+        if ($request->headers->get('X-DFA-Token') === null && !$isAlexa) {
             throw new ApiException('Missing Token');
         }
 
-        if ($request->headers->get('X-DFA-Token') !== 'dfa') {
+        if ($request->headers->get('X-DFA-Token') !== 'dfa' && !$isAlexa) {
             throw new ApiException('Invalid Token');
         }
 
