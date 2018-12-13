@@ -46,7 +46,7 @@ class ApiController extends AbstractController
          */
         $tmp_dir = $kernel->getProjectDir() . '/var/tmp';
         $file = 'req_' . $now->format('Y-m-d-H-i-s') . '.log';
-        $path = $tmp_dir.'/'.$file;
+        $path = $tmp_dir . '/' . $file;
         if (!$fs->exists($tmp_dir)) {
             $fs->mkdir($tmp_dir);
             $fs->chown($tmp_dir, 'www-data', true);
@@ -63,7 +63,6 @@ class ApiController extends AbstractController
         try {
             $alexa = new Alexa(getenv('ALEXA_SKILL_ID'));
         } catch (AlexaException $e) {
-            $fs->appendToFile($path,'\nAlexa Init failed: '.$e->getMessage().'\n');
             return ShortResponse::exception('Alexa initialization failed', $e->getMessage());
         }
 
@@ -73,7 +72,6 @@ class ApiController extends AbstractController
         try {
             $alexa->verify($alexa_request_body);
         } catch (AlexaException $e) {
-            $fs->appendToFile($path,'\nCould not verify Alexa Skill ID: '.$e->getMessage().'\n');
             return ShortResponse::error('Could not verify Alexa Skill ID', array(
                 'body' => $alexa_request_body,
                 'exception' => $e->getMessage(),
@@ -84,8 +82,16 @@ class ApiController extends AbstractController
          * For now we only save the request
          * @todo: change to sth. meaningful
          */
-        $fs->appendToFile($path,'\nRequest saved\n');
-        return ShortResponse::success('Request saved');
+
+        return new JsonResponse(array(
+            'version' => '1.0',
+            'response' => array(
+                'outputSpeech' => array(
+                    'type' => 'PlainText',
+                    'text' => 'Heute ist der 13.12.2018',
+                )
+            )
+        ));
     }
 
     /**
