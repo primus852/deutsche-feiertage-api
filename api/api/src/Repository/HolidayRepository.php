@@ -52,9 +52,9 @@ class HolidayRepository extends ServiceEntityRepository
     /**
      * @param Holiday $entity
      * @param array $laender
-     * @return void
+     * @return Holiday
      */
-    public function addOrUpdate(Holiday $entity, array $laender): void
+    public function addOrUpdate(Holiday $entity, array $laender): Holiday
     {
         $exists = $this->findOneBy(array(
             'holidayDay' => $entity->getHolidayDay(),
@@ -78,6 +78,8 @@ class HolidayRepository extends ServiceEntityRepository
 
         $this->_em->persist($entity);
         $this->_em->flush();
+
+        return $entity;
     }
 
 }

@@ -3,6 +3,8 @@
 namespace App\Command;
 
 use App\Entity\Holiday;
+use App\Entity\HolidayComment;
+use App\Repository\HolidayCommentRepository;
 use App\Repository\HolidayRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,6 +23,7 @@ class AddHolidayCommand extends Command
 
     public function __construct(
         private readonly HolidayRepository $holidayRepository,
+        private readonly HolidayCommentRepository $holidayCommentRepository,
         string  $name = null
     )
     {
@@ -32,6 +35,8 @@ class AddHolidayCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $helper = $this->getHelper('question');
 
+        $nameDefault = false;
+        $commentDefault = false;
 
         while (true) {
 
@@ -51,8 +56,18 @@ class AddHolidayCommand extends Command
             /**
              * Name
              */
-            $qHolidayName = new Question("Please enter the name\n");
+            if ($nameDefault !== false) {
+                $qHolidayName = new Question("Please enter the name (default: " . $nameDefault . ")\n");
+            } else {
+                $qHolidayName = new Question("Please enter the name\n");
+            }
             $aHolidayName = $helper->ask($input, $output, $qHolidayName);
+            if ($aHolidayName === null && $nameDefault !== false) {
+                $aHolidayName = $nameDefault;
+            }
+
+            $nameDefault = $aHolidayName;
+
             $holiday->setHolidayName($aHolidayName);
 
             /**
@@ -87,7 +102,7 @@ class AddHolidayCommand extends Command
             foreach ($laender as $name => $land) {
 
                 if (!$aBundesweit) {
-                    $qLand = new ConfirmationQuestion("in " . $name . " (".$land.")? (y/n, default = n)\n", false, '/^(y|j)/i');
+                    $qLand = new ConfirmationQuestion("in " . $name . " (" . $land . ")? (y/n, default = n)\n", false, '/^(y|j)/i');
                     $aLand = $helper->ask($input, $output, $qLand);
                     $holiday = $this->_updateHolidayBundesland($land, $aLand, $holiday);
                 } else {
@@ -95,8 +110,37 @@ class AddHolidayCommand extends Command
                 }
             }
 
-            $this->holidayRepository->addOrUpdate($holiday, $laender);
-            $io->success('Holiday added!');
+            /**
+             * Add Comment
+             */
+            if ($commentDefault !== false && $commentDefault !== '' && $commentDefault !== null && $commentDefault !== 'x') {
+                $qHolidayComment = new Question("Add a comment (default: " . $commentDefault . "). Enter \"x\" or leave empty to skip to skip.\n");
+            } else {
+                $qHolidayComment = new Question("Add a comment. Leave empty to skip.\n");
+            }
+            $aHolidayComment = $helper->ask($input, $output, $qHolidayComment);
+            if ($aHolidayComment === null && $commentDefault !== false) {
+                $aHolidayComment = $commentDefault;
+            }
+            $commentDefault = $aHolidayComment;
+
+            if($aHolidayComment !== null && $aHolidayComment !== '' && $aHolidayComment !== 'x'){
+                $comment = new HolidayComment();
+                $comment->setComment($aHolidayComment);
+                $holiday->addHolidayComment($comment);
+                $this->holidayCommentRepository->add($comment);
+            }
+
+            $hNew = $this->holidayRepository->addOrUpdate($holiday, $laender);
+            $io->success(
+                $hNew->getHolidayName() .
+                ' (' . $hNew->getHolidayDay() .
+                '/' . $hNew->getHolidayMonth() .
+                '/' . ($hNew->getHolidayYear() !== null ?
+                    $hNew->getHolidayYear() : 'XX') . ') - Holiday added!');
+
+
+
 
             $qAgain = new ConfirmationQuestion("another? (y/n, default = y)\n", true, '/^(y|j)/i');
             $aAgain = $helper->ask($input, $output, $qAgain);

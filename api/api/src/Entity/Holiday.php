@@ -94,6 +94,7 @@ class Holiday
     public function getId(): ?Uuid
     {
         return $this->id;
+
     }
 
     public function getHolidayDay(): ?int
