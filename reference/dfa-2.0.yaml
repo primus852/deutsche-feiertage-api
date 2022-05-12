@@ -11,7 +11,7 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  '/api/v2/{date}':
+  '/api/v2/by-date/{date}':
     parameters:
       - schema:
           type: string
@@ -29,10 +29,10 @@ paths:
       description: Get a single Date Info
       parameters:
         - schema:
-            type: string
+            type: boolean
           in: query
-          name: short
-          description: Show only minimal output
+          name: includeInfo
+          description: Include Comments and States
       responses:
         '200':
           description: OK
@@ -58,7 +58,7 @@ paths:
                     enum:
                       - HOLIDAY_LOADED
                   data:
-                    $ref: '#/components/schemas/SingleDateShort'
+                    $ref: '#/components/schemas/SingleDate'
                 required:
                   - result
                   - message
@@ -195,9 +195,216 @@ paths:
                   value:
                     result: error
                     message: UNKNOWN
+  '/api/v2/by-state-date/{state}/{date}':
+    parameters:
+      - schema:
+          type: string
+          format: date
+          pattern: '^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
+        name: date
+        in: path
+        required: true
+        description: YYYY-MM-DD
+      - schema:
+          type: string
+          enum:
+            - bw
+            - bay
+            - be
+            - bb
+            - hb
+            - hh
+            - he
+            - mv
+            - ni
+            - nw
+            - rp
+            - sl
+            - sn
+            - st
+            - sh
+            - th
+          example: be
+          maxLength: 3
+          minLength: 2
+        name: state
+        in: path
+        required: true
+        description: Short State
+    get:
+      summary: Get a single Date for specific State
+      tags:
+        - single
+      operationId: get-api-v2-state-date
+      description: Get a single Date Info for a specific Date
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: result
+                    message: message
+                    data: data
+                properties:
+                  result:
+                    type: string
+                    enum:
+                      - success
+                    example: success
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - HOLIDAY_LOADED
+                  data:
+                    $ref: '#/components/schemas/SingleDateState'
+                required:
+                  - result
+                  - message
+                  - data
+              examples:
+                08.03.2022 - Berlin:
+                  value:
+                    result: success
+                    message: HOLIDAY_LOADED
+                    data:
+                      state: be
+                      isHoliday: true
+                      holiday:
+                        name: Frauentag
+                        date: '2022-05-26'
+                      isBundesweit: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: result
+                    message: message
+                properties:
+                  result:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - error
+                    example: error
+                  message:
+                    type: string
+                    minLength: 1
+                    example: INVALID_DATE
+                    enum:
+                      - INVALID_DATE
+                required:
+                  - result
+                  - message
+              examples:
+                Date not valid:
+                  value:
+                    result: error
+                    message: INVALID_DATE
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: error
+                    message: mess
+                properties:
+                  result:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - error
+                    example: error
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - UNAUTHORIZED
+                    example: UNAUTHORIZED
+                required:
+                  - result
+                  - message
+              examples:
+                Unauthorized:
+                  value:
+                    result: error
+                    message: UNAUTHORIZED
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: result
+                    message: message
+                properties:
+                  result:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - error
+                    example: error
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - result
+                  - message
+              examples:
+                Not in DB:
+                  value:
+                    result: error
+                    message: HOLIDAY_NOT_IN_DB
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: res
+                    message: message
+                properties:
+                  result:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - UNKNOWN
+                    example: UNKNOWN
+                required:
+                  - result
+                  - message
+              examples:
+                Unkown Error:
+                  value:
+                    result: error
+                    message: UNKNOWN
 components:
   schemas:
-    SingleDateShort:
+    SingleDate:
       description: ''
       type: object
       x-examples:
@@ -206,7 +413,113 @@ components:
             name: Himmelfahrt
             date: '2022-05-26'
           isBundesweit: true
+      examples:
+        - holiday:
+            name: Christi Himmelfahrt
+            date: '2022-05-26'
+          isBundesweit: true
       properties:
+        isHoliday:
+          type: boolean
+        holiday:
+          type: object
+          required:
+            - name
+            - date
+          properties:
+            name:
+              type: string
+              minLength: 1
+              example: Christi Himmelfahrt
+            date:
+              type: string
+              minLength: 1
+              example: '2022-05-26'
+              format: date
+        isBundesweit:
+          type: boolean
+        info:
+          type: object
+          properties:
+            laender:
+              required:
+                - bw
+                - bay
+                - be
+                - bb
+                - hb
+                - hh
+                - he
+                - mv
+                - ni
+                - nw
+                - rp
+                - sl
+                - sn
+                - st
+                - sh
+                - th
+              type: object
+              properties:
+                bw:
+                  type: boolean
+                bay:
+                  type: boolean
+                be:
+                  type: boolean
+                bb:
+                  type: boolean
+                hb:
+                  type: boolean
+                hh:
+                  type: boolean
+                he:
+                  type: boolean
+                mv:
+                  type: boolean
+                ni:
+                  type: boolean
+                nw:
+                  type: boolean
+                rp:
+                  type: boolean
+                sl:
+                  type: boolean
+                sn:
+                  type: boolean
+                st:
+                  type: boolean
+                sh:
+                  type: boolean
+                th:
+                  type: boolean
+            comments:
+              type: array
+              items:
+                type: string
+          required:
+            - laender
+            - comments
+      required:
+        - isHoliday
+    SingleDateState:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          holiday:
+            name: Himmelfahrt
+            date: '2022-05-26'
+          isBundesweit: true
+      examples:
+        - isHoliday: true
+          holiday:
+            name: Christi Himmelfahrt
+            date: '2022-05-26'
+          isBundesweit: true
+      properties:
+        isHoliday:
+          type: boolean
         holiday:
           type: object
           required:
@@ -225,13 +538,7 @@ components:
         isBundesweit:
           type: boolean
       required:
-        - holiday
-        - isBundesweit
-      examples:
-        - holiday:
-            name: Christi Himmelfahrt
-            date: '2022-05-26'
-          isBundesweit: true
+        - isHoliday
     ResultEnum:
       type: string
       title: ResultEnum
