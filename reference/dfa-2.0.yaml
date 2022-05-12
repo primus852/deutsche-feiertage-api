@@ -158,8 +158,6 @@ paths:
                   message:
                     type: string
                     minLength: 1
-                    enum:
-                      - HOLIDAY_NOT_FOUND
                 required:
                   - result
                   - message
@@ -167,7 +165,7 @@ paths:
                 Not in DB:
                   value:
                     result: error
-                    message: HOLIDAY_NOT_FOUND
+                    message: HOLIDAY_NOT_IN_DB
         '500':
           description: Internal Server Error
           content:
