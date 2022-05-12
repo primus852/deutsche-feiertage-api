@@ -48,7 +48,10 @@ paths:
                     data: data
                 properties:
                   result:
-                    $ref: '#/components/schemas/ResultEnum'
+                    type: string
+                    enum:
+                      - success
+                    example: success
                   message:
                     type: string
                     minLength: 1
@@ -83,7 +86,11 @@ paths:
                     message: message
                 properties:
                   result:
-                    $ref: '#/components/schemas/ResultEnum'
+                    type: string
+                    minLength: 1
+                    enum:
+                      - error
+                    example: error
                   message:
                     type: string
                     minLength: 1
@@ -99,6 +106,38 @@ paths:
                   value:
                     result: error
                     message: INVALID_TOKEN
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: error
+                    message: mess
+                properties:
+                  result:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - error
+                    example: error
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - UNAUTHORIZED
+                    example: UNAUTHORIZED
+                required:
+                  - result
+                  - message
+              examples:
+                Unauthorized:
+                  value:
+                    result: error
+                    message: UNAUTHORIZED
         '404':
           description: Not Found
           content:
@@ -112,7 +151,11 @@ paths:
                     message: message
                 properties:
                   result:
-                    $ref: '#/components/schemas/ResultEnum'
+                    type: string
+                    minLength: 1
+                    enum:
+                      - error
+                    example: error
                   message:
                     type: string
                     minLength: 1
@@ -139,7 +182,8 @@ paths:
                     message: message
                 properties:
                   result:
-                    $ref: '#/components/schemas/ResultEnum'
+                    type: string
+                    example: error
                   message:
                     type: string
                     minLength: 1
