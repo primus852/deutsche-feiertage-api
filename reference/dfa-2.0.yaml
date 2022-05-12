@@ -244,10 +244,9 @@ components:
       example: success
       description: Possible Result Strings
   securitySchemes:
-    Global Key:
-      name: x-dfa-token
-      type: apiKey
-      in: header
+    Free JWT:
+      type: http
+      scheme: bearer
   responses: {}
 security:
   - Global Key: []
