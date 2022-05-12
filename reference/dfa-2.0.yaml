@@ -26,7 +26,7 @@ paths:
       tags:
         - single
       operationId: get-api-v2-date
-      description: ''
+      description: Get a single Date Info
       parameters:
         - schema:
             type: string
@@ -247,6 +247,7 @@ components:
     Free JWT:
       type: http
       scheme: bearer
+      description: Global JWT for free Usage
   responses: {}
 security:
-  - Global Key: []
+  - Free JWT: []
