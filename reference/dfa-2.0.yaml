@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: dfa 2.0
-  version: '1.0'
+  title: dfa
+  version: '2.0'
   summary: Deutsche Feiertage API 2.0
   description: Request any date and see check if it is a german holiday
   contact:
@@ -11,190 +11,198 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  '/users/{userId}':
+  '/api/v2/{date}':
     parameters:
       - schema:
-          type: integer
-        name: userId
+          type: string
+          format: date
+          pattern: '^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
+        name: date
         in: path
         required: true
-        description: Id of an existing user.
+        description: YYYY-MM-DD
     get:
-      summary: Get User Info by User ID
+      summary: Get a single Date
       tags: []
+      operationId: get-api-v2-date
+      description: ''
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: short
+          description: Show only minimal output
       responses:
         '200':
-          description: User Found
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: result
+                    message: message
+                    data: data
+                properties:
+                  result:
+                    $ref: '#/components/schemas/ResultEnum'
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - HOLIDAY_LOADED
+                  data:
+                    $ref: '#/components/schemas/SingleDateShort'
+                required:
+                  - result
+                  - message
+                  - data
               examples:
-                Get User Alice Smith:
+                26.05.2022:
                   value:
-                    id: 142
-                    firstName: Alice
-                    lastName: Smith
-                    email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
-        '404':
-          description: User Not Found
-      operationId: get-users-userId
-      description: Retrieve the information of the user with the matching user ID.
-    patch:
-      summary: Update User Information
-      operationId: patch-users-userId
-      responses:
-        '200':
-          description: User Updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Updated User Rebecca Baker:
-                  value:
-                    id: 13
-                    firstName: Rebecca
-                    lastName: Baker
-                    email: rebecca@gmail.com
-                    dateOfBirth: '1985-10-02'
-                    emailVerified: false
-                    createDate: '2019-08-24'
-        '404':
-          description: User Not Found
-        '409':
-          description: Email Already Taken
-      description: Update the information of an existing user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
-                dateOfBirth:
-                  type: string
-            examples:
-              Update First Name:
-                value:
-                  firstName: Rebecca
-              Update Email:
-                value:
-                  email: rebecca@gmail.com
-              Update Last Name & Date of Birth:
-                value:
-                  lastName: Baker
-                  dateOfBirth: '1985-10-02'
-        description: Patch user properties to update.
-  /user:
-    post:
-      summary: Create New User
-      operationId: post-user
-      responses:
-        '200':
-          description: User Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
+                    result: success
+                    message: HOLIDAY_LOADED
+                    data:
+                      holiday:
+                        name: Christi Himmelfahrt
+                        date: '2022-05-26'
+                      isBundesweit: true
         '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-              required:
-                - firstName
-                - lastName
-                - email
-                - dateOfBirth
-            examples:
-              Create User Bob Fellow:
-                value:
-                  firstName: Bob
-                  lastName: Fellow
-                  email: bob.fellow@gmail.com
-                  dateOfBirth: '1996-08-24'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: result
+                    message: message
+                properties:
+                  result:
+                    $ref: '#/components/schemas/ResultEnum'
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - INVALID_TOKEN
+                      - TOKEN_NOT_FOUND
+                    example: INVALID_TOKEN
+                required:
+                  - result
+                  - message
+              examples:
+                Token not valid:
+                  value:
+                    result: error
+                    message: INVALID_TOKEN
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: result
+                    message: message
+                properties:
+                  result:
+                    $ref: '#/components/schemas/ResultEnum'
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - HOLIDAY_NOT_FOUND
+                required:
+                  - result
+                  - message
+              examples:
+                Not in DB:
+                  value:
+                    result: error
+                    message: HOLIDAY_NOT_FOUND
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: res
+                    message: message
+                properties:
+                  result:
+                    $ref: '#/components/schemas/ResultEnum'
+                  message:
+                    type: string
+                    minLength: 1
+                    enum:
+                      - UNKOWN
+                    example: UNKNOWN
+                required:
+                  - result
+                  - message
+              examples:
+                Unkown Error:
+                  value:
+                    result: error
+                    message: UNKOWN
 components:
   schemas:
-    User:
-      title: User
-      type: object
+    SingleDateShort:
       description: ''
-      examples:
-        - id: 142
-          firstName: Alice
-          lastName: Smith
-          email: alice.smith@gmail.com
-          dateOfBirth: '1997-10-31'
-          emailVerified: true
-          signUpDate: '2019-08-24'
+      type: object
+      x-examples:
+        example-1:
+          holiday:
+            name: Himmelfahrt
+            date: '2022-05-26'
+          isBundesweit: true
       properties:
-        id:
-          type: integer
-          description: Unique identifier for the given user.
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-          format: email
-        dateOfBirth:
-          type: string
-          format: date
-          example: '1997-10-31'
-        emailVerified:
+        holiday:
+          type: object
+          required:
+            - name
+            - date
+          properties:
+            name:
+              type: string
+              minLength: 1
+              example: Christi Himmelfahrt
+            date:
+              type: string
+              minLength: 1
+              example: '2022-05-26'
+              format: date
+        isBundesweit:
           type: boolean
-          description: Set to true if the user's email has been verified.
-        createDate:
-          type: string
-          format: date
-          description: The date that the user was created.
       required:
-        - id
-        - firstName
-        - lastName
-        - email
-        - emailVerified
+        - holiday
+        - isBundesweit
+      examples:
+        - holiday:
+            name: Christi Himmelfahrt
+            date: '2022-05-26'
+          isBundesweit: true
+    ResultEnum:
+      type: string
+      title: ResultEnum
+      enum:
+        - success
+        - error
+      example: success
+      description: Possible Result Strings
   securitySchemes:
     Global Key:
       name: dfa
       type: apiKey
       in: header
+  responses: {}
 security:
   - Global Key: []
