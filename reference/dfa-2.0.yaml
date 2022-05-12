@@ -304,6 +304,7 @@ paths:
                     example: INVALID_DATE
                     enum:
                       - INVALID_DATE
+                      - INVALID_STATE
                 required:
                   - result
                   - message
@@ -312,6 +313,10 @@ paths:
                   value:
                     result: error
                     message: INVALID_DATE
+                State not valid:
+                  value:
+                    result: error
+                    message: INVALID_STATE
         '401':
           description: Unauthorized
           content:
