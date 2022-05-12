@@ -94,18 +94,17 @@ paths:
                   message:
                     type: string
                     minLength: 1
+                    example: INVALID_DATE
                     enum:
-                      - INVALID_TOKEN
-                      - TOKEN_NOT_FOUND
-                    example: INVALID_TOKEN
+                      - INVALID_DATE
                 required:
                   - result
                   - message
               examples:
-                Token not valid:
+                Date not valid:
                   value:
                     result: error
-                    message: INVALID_TOKEN
+                    message: INVALID_DATE
         '401':
           description: Unauthorized
           content:
