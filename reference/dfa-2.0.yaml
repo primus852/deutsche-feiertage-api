@@ -23,7 +23,8 @@ paths:
         description: YYYY-MM-DD
     get:
       summary: Get a single Date
-      tags: []
+      tags:
+        - single
       operationId: get-api-v2-date
       description: ''
       parameters:
@@ -143,7 +144,7 @@ paths:
                     type: string
                     minLength: 1
                     enum:
-                      - UNKOWN
+                      - UNKNOWN
                     example: UNKNOWN
                 required:
                   - result
@@ -152,7 +153,7 @@ paths:
                 Unkown Error:
                   value:
                     result: error
-                    message: UNKOWN
+                    message: UNKNOWN
 components:
   schemas:
     SingleDateShort:
@@ -200,7 +201,7 @@ components:
       description: Possible Result Strings
   securitySchemes:
     Global Key:
-      name: dfa
+      name: x-dfa-token
       type: apiKey
       in: header
   responses: {}
