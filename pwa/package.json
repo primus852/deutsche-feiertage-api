@@ -1,0 +1,39 @@
+{
+  "name": "pwa",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@api-platform/admin": "^3.4.3",
+    "@fontsource/poppins": "^4.5.10",
+    "@tailwindcss/forms": "^0.5.3",
+    "formik": "^2.2.9",
+    "isomorphic-unfetch": "^3.1.0",
+    "next": "^13.2.1",
+    "postcss": "^8.4.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-query": "^3.39.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@popperjs/core": "^2.11.6",
+    "@types/node": "^18.14.2",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.35.0",
+    "eslint-config-next": "^13.2.1",
+    "tailwindcss": "^3.2.7",
+    "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.19.0",
+    "@popperjs/core": "^2.11.6"
+  }
+}

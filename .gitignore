@@ -1,11 +1,3 @@
-
-###> symfony/framework-bundle ###
 /.env
-/public/bundles/
-/var/
-/vendor/
-###< symfony/framework-bundle ###
-
-.idea
-/composer.lock
-/symfony.lock
+/helm/api-platform/charts/*
+!/helm/api-platform/charts/.gitignore

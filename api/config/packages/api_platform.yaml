@@ -1,0 +1,9 @@
+api_platform:
+    exception_to_status:
+        # Custom mapping
+        App\Exception\DFAException: 401
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
