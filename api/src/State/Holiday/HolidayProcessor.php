@@ -71,6 +71,11 @@ class HolidayProcessor implements ProcessorInterface
             $year = $data->year;
         }
 
+        /**
+         * Check if there is a Holiday on this day already
+         */
+        $exists = $this->entityManager->getRepository(Holiday::class)->findByDateParams($data->day, $data->month, $year);
+
         $holiday = new Holiday();
         $holiday->setHolidayDay($data->day);
         $holiday->setHolidayMonth($data->month);

@@ -35,7 +35,7 @@ class HolidayAddRequest
     #[ApiProperty(
         openapiContext: [
             'type' => 'string',
-            'enum' => ['BW', 'BAY', 'BE'],
+            'enum' => ['BW', 'BAY', 'BE', 'BB', 'HB', 'HH', 'HE', 'MV', 'NI', 'NW', 'RP', 'SL', 'SN', 'ST', 'SH', 'TH'],
             'example' => 'BE'
         ]
     )]
