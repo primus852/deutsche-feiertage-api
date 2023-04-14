@@ -6,7 +6,7 @@ use App\Entity\Holiday;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class HolidayAddResponse implements \JsonSerializable
+class HolidayResponse implements \JsonSerializable
 {
     #[Groups(['read:admin'])]
     public Uuid $id;
@@ -15,10 +15,13 @@ class HolidayAddResponse implements \JsonSerializable
     public string $date;
 
     #[Groups(['read:admin'])]
+    public int $day;
+
+    #[Groups(['read:admin'])]
     public int $month;
 
     #[Groups(['read:admin'])]
-    public int $year;
+    public ?int $year;
 
     #[Groups(['read:admin'])]
     public bool $isGeneral;
@@ -38,12 +41,17 @@ class HolidayAddResponse implements \JsonSerializable
 
         if ($holiday->getHolidayYear() !== null) {
             $date = \DateTime::createFromFormat('Y-n-j', $holiday->getHolidayYear() . '-' . $holiday->getHolidayMonth() . '-' . $holiday->getHolidayDay());
+            $this->date = $date->format('Y-m-d');
         } else {
             $date = \DateTime::createFromFormat('Y-n-j', '0000-' . $holiday->getHolidayMonth() . '-' . $holiday->getHolidayDay());
+            $this->date = $date->format('*-m-d');
         }
 
-        $this->date = $date->format('Y-m-d');
+        $this->day = $holiday->getHolidayDay();
+        $this->month = $holiday->getHolidayMonth();
+        $this->year = $holiday->getHolidayYear();
         $this->isGeneral = $holiday->getIsGeneral();
+        $this->name = $holiday->getHolidayName();
     }
 
     /**
@@ -53,7 +61,12 @@ class HolidayAddResponse implements \JsonSerializable
     {
         return [
             'id' => $this->id,
-            'isGeneral' => $this->isGeneral
+            'date' => $this->date,
+            'day' => $this->day,
+            'month' => $this->month,
+            'year' => $this->year,
+            'isGeneral' => $this->isGeneral,
+            'name' => $this->name,
         ];
     }
 

@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\DTO\Holiday\HolidayAddRequest;
-use App\DTO\Holiday\HolidayAddResponse;
+use App\DTO\Holiday\HolidayResponse;
+use App\DTO\Holiday\HolidayPatchRequest;
 use App\Mapping\EntityBase;
 use App\Repository\HolidayRepository;
 use App\State\Holiday\HolidayProcessor;
@@ -18,8 +21,18 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: HolidayRepository::class)]
 #[ApiResource(
     operations: [
+        new Get(
+            uriTemplate: '/by-date/{date}',
+            openapiContext: [
+                'tags' => ['Holiday [Single]']
+            ],
+            normalizationContext: [
+                'groups' => 'read:public'
+            ],
+            output: HolidayResponse::class
+        ),
         new Post(
-            uriTemplate: '/admin/add-holiday',
+            uriTemplate: '/admin/holiday',
             openapiContext: [
                 'tags' => ['Holiday [Admin]']
             ],
@@ -30,8 +43,22 @@ use Symfony\Component\Uid\Uuid;
                 'groups' => 'write:admin'
             ],
             input: HolidayAddRequest::class,
-            output: HolidayAddResponse::class
+            output: HolidayResponse::class
         ),
+        new Patch(
+            uriTemplate: '/admin/holiday/{id}',
+            openapiContext: [
+                'tags' => ['Holiday [Admin]']
+            ],
+            normalizationContext: [
+                'groups' => 'read:admin'
+            ],
+            denormalizationContext: [
+                'groups' => 'write:admin'
+            ],
+            input: HolidayPatchRequest::class,
+            output: HolidayResponse::class
+        )
     ],
     formats: ["json", "jsonld"],
     provider: HolidayProvider::class,

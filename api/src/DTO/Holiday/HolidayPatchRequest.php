@@ -7,15 +7,13 @@ use App\Enum\FederalState;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class HolidayAddRequest
+class HolidayPatchRequest
 {
 
-    #[Assert\NotBlank]
     #[Assert\Positive]
     #[Groups(['write:admin'])]
     public ?int $day = null;
 
-    #[Assert\NotBlank]
     #[Assert\Positive]
     #[Groups(['write:admin'])]
     public ?int $month = null;
@@ -23,11 +21,9 @@ class HolidayAddRequest
     #[Groups(['write:admin'])]
     public ?int $year = null;
 
-    #[Assert\NotNull]
     #[Groups(['write:admin'])]
     public ?bool $isGeneral = false;
 
-    #[Assert\NotBlank]
     #[Groups(['write:admin'])]
     public ?string $name = null;
 

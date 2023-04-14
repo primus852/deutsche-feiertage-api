@@ -4,7 +4,7 @@ namespace App\State\Holiday;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\DTO\Holiday\HolidayAddResponse;
+use App\DTO\Holiday\HolidayResponse;
 use App\Entity\Holiday;
 use App\Exception\DFAException;
 
@@ -33,6 +33,6 @@ readonly class HolidayProvider implements ProviderInterface
             throw new DFAException('HOLIDAY_NOT_FOUND');
         }
 
-        return new HolidayAddResponse($holiday);
+        return new HolidayResponse($holiday);
     }
 }
