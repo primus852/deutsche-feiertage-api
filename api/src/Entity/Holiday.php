@@ -6,13 +6,14 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\ApiProperty;
 use App\DTO\Holiday\HolidayAddRequest;
 use App\DTO\Holiday\HolidayResponse;
 use App\DTO\Holiday\HolidayPatchRequest;
 use App\Mapping\EntityBase;
 use App\Repository\HolidayRepository;
 use App\State\Holiday\HolidayProcessor;
-use App\State\Holiday\HolidayProvider;
+use App\State\Holiday\HolidayByDateProvider;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -22,14 +23,18 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new Get(
-            uriTemplate: '/by-date/{date}',
+            uriTemplate: '/by-date/{id}',
             openapiContext: [
                 'tags' => ['Holiday [Single]']
             ],
             normalizationContext: [
                 'groups' => 'read:public'
             ],
-            output: HolidayResponse::class
+            denormalizationContext: [
+                'groups' => 'write:admin'
+            ],
+            output: HolidayResponse::class,
+            provider: HolidayByDateProvider::class
         ),
         new Post(
             uriTemplate: '/admin/holiday',
@@ -61,7 +66,6 @@ use Symfony\Component\Uid\Uuid;
         )
     ],
     formats: ["json", "jsonld"],
-    provider: HolidayProvider::class,
     processor: HolidayProcessor::class
 )]
 #[ORM\HasLifecycleCallbacks]

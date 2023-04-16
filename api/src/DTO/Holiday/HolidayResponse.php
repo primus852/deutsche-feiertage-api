@@ -3,6 +3,7 @@
 namespace App\DTO\Holiday;
 
 use App\Entity\Holiday;
+use App\Enum\FederalState;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -11,7 +12,7 @@ class HolidayResponse implements \JsonSerializable
     #[Groups(['read:admin'])]
     public Uuid $id;
 
-    #[Groups(['read:admin'])]
+    #[Groups(['read:admin', 'read:public'])]
     public string $date;
 
     #[Groups(['read:admin'])]
@@ -23,13 +24,13 @@ class HolidayResponse implements \JsonSerializable
     #[Groups(['read:admin'])]
     public ?int $year;
 
-    #[Groups(['read:admin'])]
+    #[Groups(['read:admin', 'read:public'])]
     public bool $isGeneral;
 
-    #[Groups(['read:admin'])]
+    #[Groups(['read:admin', 'read:public'])]
     public string $name;
 
-    #[Groups(['read:admin'])]
+    #[Groups(['read:admin', 'read:public'])]
     public array $appliesTo;
 
     /**
@@ -52,6 +53,13 @@ class HolidayResponse implements \JsonSerializable
         $this->year = $holiday->getHolidayYear();
         $this->isGeneral = $holiday->getIsGeneral();
         $this->name = $holiday->getHolidayName();
+
+        foreach (FederalState::cases() as $federalState) {
+            $method = 'is' . ucfirst((strtolower($federalState->value)));
+            if ($holiday->$method()) {
+                $this->appliesTo[] = strtolower($federalState->value);
+            }
+        }
     }
 
     /**
@@ -67,6 +75,7 @@ class HolidayResponse implements \JsonSerializable
             'year' => $this->year,
             'isGeneral' => $this->isGeneral,
             'name' => $this->name,
+            'appliesTo' => $this->appliesTo,
         ];
     }
 

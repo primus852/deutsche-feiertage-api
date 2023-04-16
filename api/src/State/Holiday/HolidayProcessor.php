@@ -10,30 +10,12 @@ use ApiPlatform\State\ProcessorInterface;
 use App\DTO\Holiday\HolidayAddRequest;
 use App\DTO\Holiday\HolidayResponse;
 use App\Entity\Holiday;
+use App\Enum\FederalState;
 use App\Exception\DFAException;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HolidayProcessor implements ProcessorInterface
 {
-    private static array $allowed = [
-        "bw",
-        "bay",
-        "be",
-        "bb",
-        "hb",
-        "hh",
-        "he",
-        "mv",
-        "ni",
-        "nw",
-        "rp",
-        "sl",
-        "sn",
-        "st",
-        "sh",
-        "th",
-    ];
-
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
     }
@@ -124,16 +106,16 @@ class HolidayProcessor implements ProcessorInterface
                     /**
                      * Reset to false
                      */
-                    foreach (self::$allowed as $item) {
-                        $method = 'set' . ucfirst(strtolower($item));
+                    foreach (FederalState::cases() as $item) {
+                        $method = 'set' . ucfirst(strtolower($item->value));
                         $holiday->$method(false);
                     }
 
                     /**
                      * Re-Apply from array
                      */
-                    foreach (self::$allowed as $item) {
-                        $method = 'set' . ucfirst(strtolower($item));
+                    foreach (FederalState::cases() as $item) {
+                        $method = 'set' . ucfirst(strtolower($item->value));
                         $inArray = in_array($item, $data->appliesTo);
                         if ($inArray) {
                             $found = true;
@@ -151,8 +133,8 @@ class HolidayProcessor implements ProcessorInterface
             /**
              * Reset to true
              */
-            foreach (self::$allowed as $item) {
-                $method = 'set' . ucfirst(strtolower($item));
+            foreach (FederalState::cases() as $item) {
+                $method = 'set' . ucfirst(strtolower($item->value));
                 $holiday->$method(true);
             }
         }
@@ -191,8 +173,8 @@ class HolidayProcessor implements ProcessorInterface
         $holiday->setHolidayName($data->name);
 
         $found = false;
-        foreach (self::$allowed as $item) {
-            $method = 'set' . ucfirst(strtolower($item));
+        foreach (FederalState::cases() as $item) {
+            $method = 'set' . ucfirst(strtolower($item->value));
             $inArray = in_array($item, $data->appliesTo);
             if ($inArray) {
                 $found = true;

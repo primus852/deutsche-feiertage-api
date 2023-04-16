@@ -34,7 +34,7 @@ class HolidayAddRequest
     #[Groups(['write:admin'])]
     #[ApiProperty(
         openapiContext: [
-            'type' => 'string',
+            'type' => FederalState::class,
             'enum' => ['BW', 'BAY', 'BE', 'BB', 'HB', 'HH', 'HE', 'MV', 'NI', 'NW', 'RP', 'SL', 'SN', 'ST', 'SH', 'TH'],
             'example' => 'BE'
         ]

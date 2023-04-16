@@ -21,6 +21,6 @@ services:
         decorates: 'api_platform.openapi.factory'
         arguments: [ '@.inner' ]
         
-    App\State\Holiday\HolidayProvider:
+    App\State\Holiday\HolidayByDateProvider:
         bind:
             $itemProvider: '@api_platform.doctrine.orm.state.item_provider'

@@ -8,7 +8,7 @@ use App\DTO\Holiday\HolidayResponse;
 use App\Entity\Holiday;
 use App\Exception\DFAException;
 
-readonly class HolidayProvider implements ProviderInterface
+readonly class HolidayByDateProvider implements ProviderInterface
 {
     public function __construct(
         private ProviderInterface $itemProvider,
