@@ -29,6 +29,7 @@ readonly class HolidayByDateProvider implements ProviderInterface
         /* @var Holiday $holiday */
         $holiday = $this->itemProvider->provide($operation, $uriVariables, $context);
 
+
         if ($holiday === null) {
             throw new DFAException('HOLIDAY_NOT_FOUND');
         }

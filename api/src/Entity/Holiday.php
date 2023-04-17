@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\ApiProperty;
 use App\DTO\Holiday\HolidayAddRequest;
 use App\DTO\Holiday\HolidayResponse;
 use App\DTO\Holiday\HolidayPatchRequest;

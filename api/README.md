@@ -6,5 +6,5 @@
   - ~~implement `findByDateParams` in HolidayRepository~~
 - ~~Add a PATCH to edit a holiday based on day month year~~
 - Add Holiday Endpoints:
-  - by date --> Endpoint now works only by ID, learn how to do this "byDate" in `HolidayByDateProvider.php` 
+  - by date --> Endpoint now works only by ID, learn how to do this "byDate" in `HolidayByDateProvider.php` --> UNDERSTAND THIS!!!
   - by Federal State (only applicable for this state, not "isGeneral")
