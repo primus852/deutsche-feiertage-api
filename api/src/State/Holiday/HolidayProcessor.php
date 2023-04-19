@@ -116,7 +116,7 @@ class HolidayProcessor implements ProcessorInterface
                      */
                     foreach (FederalState::cases() as $item) {
                         $method = 'set' . ucfirst(strtolower($item->value));
-                        $inArray = in_array($item, $data->appliesTo);
+                        $inArray = in_array($item->value, $data->appliesTo);
                         if ($inArray) {
                             $found = true;
                         }
@@ -175,7 +175,7 @@ class HolidayProcessor implements ProcessorInterface
         $found = false;
         foreach (FederalState::cases() as $item) {
             $method = 'set' . ucfirst(strtolower($item->value));
-            $inArray = in_array($item, $data->appliesTo);
+            $inArray = in_array($item->value, $data->appliesTo);
             if ($inArray) {
                 $found = true;
             }

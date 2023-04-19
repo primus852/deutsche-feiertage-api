@@ -25,6 +25,9 @@ class HolidayResponse implements \JsonSerializable
     public ?int $year;
 
     #[Groups(['read:admin', 'read:public'])]
+    public bool $isHoliday;
+
+    #[Groups(['read:admin', 'read:public'])]
     public bool $isGeneral;
 
     #[Groups(['read:admin', 'read:public'])]
@@ -34,30 +37,39 @@ class HolidayResponse implements \JsonSerializable
     public array $appliesTo;
 
     /**
-     * @param Holiday $holiday
+     * @param Holiday|null $holiday
+     * @param string|null $requestedDate
      */
-    public function __construct(Holiday $holiday)
+    public function __construct(?Holiday $holiday = null, ?string $requestedDate = null)
     {
-        $this->id = $holiday->getId();
 
-        if ($holiday->getHolidayYear() !== null) {
-            $date = \DateTime::createFromFormat('Y-n-j', $holiday->getHolidayYear() . '-' . $holiday->getHolidayMonth() . '-' . $holiday->getHolidayDay());
-            $this->date = $date->format('Y-m-d');
-        } else {
-            $date = \DateTime::createFromFormat('Y-n-j', '0000-' . $holiday->getHolidayMonth() . '-' . $holiday->getHolidayDay());
-            $this->date = $date->format('*-m-d');
-        }
+        if ($holiday === null) {
+            $this->date = $requestedDate;
+            $this->isHoliday = false;
+        }else{
 
-        $this->day = $holiday->getHolidayDay();
-        $this->month = $holiday->getHolidayMonth();
-        $this->year = $holiday->getHolidayYear();
-        $this->isGeneral = $holiday->getIsGeneral();
-        $this->name = $holiday->getHolidayName();
+            $this->id = $holiday->getId();
+            $this->isHoliday = true;
 
-        foreach (FederalState::cases() as $federalState) {
-            $method = 'is' . ucfirst((strtolower($federalState->value)));
-            if ($holiday->$method()) {
-                $this->appliesTo[] = strtolower($federalState->value);
+            if ($holiday->getHolidayYear() !== null) {
+                $date = \DateTime::createFromFormat('Y-n-j', $holiday->getHolidayYear() . '-' . $holiday->getHolidayMonth() . '-' . $holiday->getHolidayDay());
+                $this->date = $date->format('Y-m-d');
+            } else {
+                $date = \DateTime::createFromFormat('Y-n-j', '0000-' . $holiday->getHolidayMonth() . '-' . $holiday->getHolidayDay());
+                $this->date = $date->format('*-m-d');
+            }
+
+            $this->day = $holiday->getHolidayDay();
+            $this->month = $holiday->getHolidayMonth();
+            $this->year = $holiday->getHolidayYear();
+            $this->isGeneral = $holiday->getIsGeneral();
+            $this->name = $holiday->getHolidayName();
+
+            foreach (FederalState::cases() as $federalState) {
+                $method = 'is' . ucfirst((strtoupper($federalState->value)));
+                if ($holiday->$method()) {
+                    $this->appliesTo[] = strtoupper($federalState->value);
+                }
             }
         }
     }
@@ -74,6 +86,7 @@ class HolidayResponse implements \JsonSerializable
             'month' => $this->month,
             'year' => $this->year,
             'isGeneral' => $this->isGeneral,
+            'isHoliday' => $this->isHoliday,
             'name' => $this->name,
             'appliesTo' => $this->appliesTo,
         ];

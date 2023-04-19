@@ -23,7 +23,8 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [
         new Get(
-            uriTemplate: '/by-date/{id}',
+            uriTemplate: '/by-date/{date}',
+            uriVariables: ['date' => 'date'],
             openapiContext: [
                 'tags' => ['Holiday [Single]']
             ],

@@ -7,11 +7,12 @@ use ApiPlatform\State\ProviderInterface;
 use App\DTO\Holiday\HolidayResponse;
 use App\Entity\Holiday;
 use App\Exception\DFAException;
+use Doctrine\ORM\EntityManagerInterface;
 
 readonly class HolidayByDateProvider implements ProviderInterface
 {
     public function __construct(
-        private ProviderInterface $itemProvider,
+        private EntityManagerInterface $entityManager
     )
     {
     }
@@ -26,14 +27,10 @@ readonly class HolidayByDateProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
 
-        /* @var Holiday $holiday */
-        $holiday = $this->itemProvider->provide($operation, $uriVariables, $context);
+        $requestedDate = $uriVariables['date'];
 
+        $holiday = $this->entityManager->getRepository(Holiday::class)->findByDateString($requestedDate);
 
-        if ($holiday === null) {
-            throw new DFAException('HOLIDAY_NOT_FOUND');
-        }
-
-        return new HolidayResponse($holiday);
+        return new HolidayResponse($holiday, $requestedDate);
     }
 }
