@@ -1,0 +1,92 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  tests:
+    name: PHP Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: app_test
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: '!ChangeMe!'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_pgsql, dom, filter, json, pgsql
+          coverage: none
+
+      - name: Check PHP Version
+        run: php -v
+
+      - name: Validate composer.json and composer.lock
+        working-directory: ./api
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: api/vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Create JWT keys directory
+        working-directory: ./api
+        run: mkdir -p config/jwt
+
+      - name: Generate JWT keys
+        working-directory: ./api
+        run: |
+          php bin/console lexik:jwt:generate-keypair --skip-if-exists || true
+
+      - name: Run database migrations
+        working-directory: ./api
+        env:
+          DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=17&charset=utf8
+          APP_ENV: test
+        run: |
+          php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+      - name: Run tests
+        working-directory: ./api
+        env:
+          DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=17&charset=utf8
+          APP_ENV: test
+        run: php bin/phpunit --no-coverage
+
+      - name: Check for syntax errors
+        working-directory: ./api
+        run: find src tests -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
+
