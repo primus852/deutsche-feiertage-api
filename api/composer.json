@@ -1,4 +1,6 @@
 {
+    "name": "deutsche-feiertage/api",
+    "description": "Deutsche Feiertage API - A REST API for German public holidays",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
