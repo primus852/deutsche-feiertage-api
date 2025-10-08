@@ -1,0 +1,79 @@
+networks:
+  dfa:
+    name: dfa
+    external: true
+  proxy:
+    name: proxy
+    external: true
+
+services:
+  api:
+    image: nginx:1.27.3-alpine
+    restart: on-failure
+    container_name: dfa-api
+    volumes:
+      - './api/public/:/srv/app'
+      - './docker/nginx/api.conf:/etc/nginx/conf.d/default.conf:ro'
+      - './docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - jwt:/srv/app/config/jwt
+    depends_on:
+      - php
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${TRAEFIK_PREFIX}-php.rule=Host(`${SERVER_NAME}`) && (PathPrefix(`/api`) || PathPrefix(`/auth`) || PathPrefix(`/metrics`)) && !PathPrefix(`/.well-known`)
+      - traefik.http.services.${TRAEFIK_PREFIX}-php.loadbalancer.server.port=80
+    networks:
+      - dfa
+      - proxy
+  
+  php:
+    build:
+      context: .
+      dockerfile: docker/build/Dockerfile
+      target: app_php_dev
+    container_name: dfa-app
+    env_file:
+      - api/.env
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+    tty: true
+    networks:
+      - dfa
+    depends_on:
+      - database
+    restart: unless-stopped
+    volumes:
+      - './api/:/srv/app'
+      - caddy_data:/data
+      - caddy_config:/config
+  ###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION}-alpine
+    container_name: dfa-database
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.${TRAEFIK_PREFIX}-database.rule=HostSNI(`*`)
+      - traefik.tcp.routers.${TRAEFIK_PREFIX}-database.entrypoints=postgres
+      - traefik.tcp.routers.${TRAEFIK_PREFIX}-database.tls=true
+      - traefik.tcp.services.${TRAEFIK_PREFIX}-database.loadbalancer.server.port=5432
+    networks:
+      - dfa
+    env_file:
+      - api/.env
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+  ###< doctrine/doctrine-bundle ###
+
+volumes:
+  jwt:
+  caddy_data:
+  caddy_config:
+  ###> doctrine/doctrine-bundle ###
+  database_data:
+  ###< doctrine/doctrine-bundle ###

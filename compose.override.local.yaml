@@ -1,0 +1,1 @@
+services:  php:    labels:      ofelia.enabled: "false"  api:    ports:      - target: 443        published: 443        protocol: tcp      - target: 80        published: 80        protocol: tcp  database:    ports:      - target: 5432        published: ${POSTGRES_EXPOSED_HOST}        protocol: tcp

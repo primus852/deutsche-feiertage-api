@@ -1,0 +1,1 @@
+services:  ui:    build:      target: app_ui      args:        APP_VERSION: ${APP_VERSION}  ###> doctrine/doctrine-bundle ###  database:    ports:      - target: 5432        published: ${POSTGRES_EXPOSED_HOST}        protocol: tcp
