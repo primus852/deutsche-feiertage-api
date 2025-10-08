@@ -2,21 +2,21 @@
 
 namespace App\DTO;
 
-class DateHolidayResponseDTO
+readonly class DateHolidayResponseDTO
 {
     /**
      * @param string $date
      * @param bool $isHoliday
      * @param bool $isNational
-     * @param HolidayDTO[] $holidays
+     * @param ?HolidayDTO $holiday
      * @param HolidayStateDTO[] $applicable
      */
     public function __construct(
-        public readonly string $date,
-        public readonly bool $isHoliday,
-        public readonly bool $isNational,
-        public readonly array $holidays,
-        public readonly array $applicable
+        public string      $date,
+        public bool        $isHoliday,
+        public bool        $isNational,
+        public ?HolidayDTO $holiday,
+        public array       $applicable
     ) {
     }
 
@@ -26,7 +26,7 @@ class DateHolidayResponseDTO
             'date' => $this->date,
             'isHoliday' => $this->isHoliday,
             'isNational' => $this->isNational,
-            'holidays' => array_map(static fn(HolidayDTO $holiday) => $holiday->toArray(), $this->holidays),
+            'holiday' => $this->holiday?->toArray(),
             'applicable' => array_map(static fn(HolidayStateDTO $state) => $state->toArray(), $this->applicable),
         ];
     }

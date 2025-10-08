@@ -74,7 +74,7 @@ readonly class DateService
         }
 
         // Check which holidays apply to the given date
-        $holidaysForDate = [];
+        $holidayForDate = null;
         $allApplicableStates = [];
 
         foreach ($holidayRulesGrouped as $holidayData) {
@@ -99,8 +99,8 @@ readonly class DateService
             }
 
             if ($matchesDate) {
-                // Add holiday to the list
-                $holidaysForDate[] = new HolidayDTO(
+
+                $holidayForDate = new HolidayDTO(
                     name: $holiday->getName(),
                     description: $holiday->getDescription()
                 );
@@ -119,7 +119,7 @@ readonly class DateService
         }
 
         // Determine if this is a holiday and if it's national
-        $isHoliday = !empty($holidaysForDate);
+        $isHoliday = $holidayForDate !== null;
         $isNational = $isHoliday && count($allApplicableStates) === count($allStates);
 
         // Build applicable states DTOs
@@ -153,7 +153,7 @@ readonly class DateService
             date: $dateString,
             isHoliday: $isHoliday,
             isNational: $isNational,
-            holidays: $holidaysForDate,
+            holiday: $holidayForDate,
             applicable: $applicableStateDTOs
         );
 
