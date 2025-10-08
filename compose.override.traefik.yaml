@@ -1,0 +1,1 @@
+services:  php:    labels:      ofelia.enabled: "false"

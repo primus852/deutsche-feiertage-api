@@ -1,11 +1,2 @@
-
-###> symfony/framework-bundle ###
 /.env
-/public/bundles/
-/var/
-/vendor/
-###< symfony/framework-bundle ###
-
-.idea
-/composer.lock
-/symfony.lock
+/.idea/
